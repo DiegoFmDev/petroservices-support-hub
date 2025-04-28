@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
@@ -7,6 +7,20 @@ import Logo from "./Logo";
 const Navbar = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Verificar si hay un usuario logueado y obtener su rol
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setUserRole(user.role);
+      } catch (e) {
+        console.error("Error parsing user from localStorage");
+      }
+    }
+  }, []);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -14,6 +28,11 @@ const Navbar = () => {
     { name: "Estado de Solicitud", path: "/estado-solicitud" },
     { name: "Contacto", path: "/contacto" },
   ];
+
+  // Links adicionales para usuarios autenticados según su rol
+  if (userRole === "admin") {
+    navLinks.push({ name: "Documentación", path: "/documentation/diagram" });
+  }
 
   return (
     <header className="border-b border-gray-200 bg-white">
@@ -37,11 +56,24 @@ const Navbar = () => {
         </nav>
         
         <div className="flex items-center gap-2">
-          <Link to="/login">
-            <Button variant={location.pathname === "/login" ? "default" : "outline"} className="bg-petroblue-600 hover:bg-petroblue-700">
-              Iniciar Sesión
+          {!userRole ? (
+            <Link to="/login">
+              <Button variant={location.pathname === "/login" ? "default" : "outline"} className="bg-petroblue-600 hover:bg-petroblue-700">
+                Iniciar Sesión
+              </Button>
+            </Link>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="border-petroblue-600 text-petroblue-600 hover:bg-petroblue-50"
+              onClick={() => {
+                localStorage.removeItem("user");
+                window.location.href = "/";
+              }}
+            >
+              Cerrar Sesión
             </Button>
-          </Link>
+          )}
         </div>
       </div>
     </header>

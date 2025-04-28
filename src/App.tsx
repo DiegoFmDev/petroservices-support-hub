@@ -13,6 +13,7 @@ import EmpleadoDashboard from "./pages/EmpleadoDashboard";
 import TecnicoDashboard from "./pages/TecnicoDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import SystemClassDiagram from "./documentation/SystemClassDiagram";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/empleado/dashboard" element={<EmpleadoDashboard />} />
           <Route path="/tecnico/dashboard" element={<TecnicoDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/documentation/diagram" element={<SystemClassDiagram />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
